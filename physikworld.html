@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8"/>
+<title>AnarchiA</title>
+<style>
+  body {
+    margin: 0;
+    background-color: white;
+    color: black;
+    font-family: sans-serif;
+    line-height: 1.6;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 10px 20px;
+    background-color: #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box; /* Важно для фиксированного nav */
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 15px;
+  }
+
+  nav a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .server-mode-switch {
+    display: flex;
+    gap: 15px;
+    font-weight: bold;
+  }
+
+  .server-mode-switch span {
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+
+  .server-mode-switch span:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .server-mode-switch .active {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: default;
+  }
+
+  #soon-msg {
+    position: absolute;
+    top: 60px;
+    right: 30px;
+    background-color: #111;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: none;
+    z-index: 1000;
+  }
+
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .card {
+    width: 250px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Объединено */
+    margin: 10px;
+    display: inline-block;
+  }
+
+  .card:hover {
+    transform: scale(1.06); /* Обновлено */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Обновлено */
+  }
+
+  .card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .card button {
+    padding: 8px 16px;
+    border: none;
+    background: royalblue;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .spacer {
+    height: 60px; /* Отступ от навигации */
+  }
+
+  .hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1599988362300-62345eecac3c?auto=format&fit=crop&w=1950&q=80');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 48px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 5px #000;
+  }
+
+  .hero p {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.7);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 700px;
+    display: flex;
+    gap: 20px;
+    position: relative;
+  }
+
+  .modal-left {
+    flex: 1;
+  }
+
+  .modal-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-right img {
+    max-width: 100%;
+    border-radius: 10px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .add-to-cart {
+    padding: 10px 20px;
+    background: royalblue;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .cart {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+  }
+
+  .cart img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .cart-count-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  }
+
+  .cart-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: black;
+    width: 400px;
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    z-index: 10001;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .cart-modal h3 {
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+
+  .cart-item {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 8px;
+  }
+
+  .cart-item img {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+
+  .checkout-btn {
+    margin-top: 20px;
+    width: 100%;
+    padding: 12px;
+    background: green;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .checkout-btn:hover {
+    background: darkgreen;
+  }
+
+  .donate-section h1,
+  .other-section h1 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #222;
+  }
+
+  .slider-container {
+    width: 100%;
+    height: 600px; /* ты можешь изменить высоту тут */
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px; /* это отступ от фиксированного меню */
+  }
+
+  .slider-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1s ease;
+    z-index: 1;
+  }
+
+  .slider-image.active {
+    opacity: 1;
+  }
+
+  .slider-image:not(.active) { /* Перенесено сюда */
+    pointer-events: none;
+  }
+
+  .slider-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 52px; /* Обновлено */
+    font-weight: 700; /* Обновлено */
+    text-shadow: 4px 4px 10px rgba(0,0,0,0.8); /* Обновлено */
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .currency-selector {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .currency-label {
+    font-size: 16px;
+    font-weight: bold;
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  .currency-dropdown {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    list-style: none;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 0;
+    margin: 0;
+    width: 250px;
+    display: none;
+    z-index: 100;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  .currency-dropdown li {
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+
+  .currency-dropdown li:hover {
+    background: #f5f5f5;
+  }
+
+  .currency-selector:hover .currency-dropdown {
+    display: block;
+  }
+
+  header#home .home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px;
+    background: #eef2f3;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin: 50px auto;
+    max-width: 800px;
+  }
+
+  @keyframes fly {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+  }
+
+  @keyframes shake {
+    0% { transform: translate(0); }
+    25% { transform: translate(-3px); }
+    50% { transform: translate(3px); }
+    75% { transform: translate(-3px); }
+    100% { transform: translate(0); }
+  }
+
+  .cart.shake {
+    animation: shake 0.4s;
+  }
+
+  .recent-purchases {
+    max-width: 1200px;
+    margin: 80px auto 40px;
+    padding: 0 20px;
+    text-align: center;
+  }
+
+  .recent-purchases h2 {
+    font-size: 32px;
+    margin-bottom: 5px;
+  }
+
+  .recent-purchases .sub {
+    color: #777;
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  .purchase-slider {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 10px;
+  }
+
+  .purchase-slider::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .purchase-slider::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+  }
+
+  .purchase-card {
+    flex: 0 0 auto;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 220px;
+    scroll-snap-align: start;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .purchase-card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+
+  .purchase-info {
+    font-size: 14px;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+  
+<nav>
+    <div class="nav-links">
+      <a href="#home">Strona główna</a>
+      <a href="#donate">Sklep</a>
+      <a href="#kraft">Wytwarzanie</a>
+      <a href="#contacts">Kontakt</a>
+    </div>
+    <div class="server-mode-switch">
+      <span class="active">Anarchia</span>
+      <span onclick="showSoon()">Klasik</span>
+    </div>
+  </nav>
+
+  <div id="soon-msg">Wkrótce za 2-3 lata</div>
+
+<div class="slider-container">
+<img class="slider-image active" src="end.jpg"/>
+<img class="slider-image" src="end1.jpeg"/>
+<img class="slider-image" src="werch.jpeg"/>
+<img class="slider-image" src="werch1.jpg"/>
+<img class="slider-image" src="ad.webp.jpeg"/>
+<div class="slider-text">AnarchiA</div>
+</div>
+<div class="spacer"></div>
+<header id="home">
+<div class="home">
+
+<h1>Witam na AnarchiA</h1>
+<p>To jest fajny serwer. Nic więcej nie powiem.
+      </p>
+</div>
+</header>
+<header class="donate" id="donate">
+<div class="donate-section">
+<br/>
+<h1>Kup przywilej</h1>
+<div class="currency-selector">
+<div class="currency-label">💱 Waluta: <span id="selected-currency">🇵🇱 Polski złoty</span></div>
+<ul class="currency-dropdown">
+<li data-currency="PLN" data-rate="4.5">🇵🇱 Polski złoty</li>
+<li data-currency="BYN" data-rate="3.5">🇧🇾 Rubel białoruski</li>
+<li data-currency="USD" data-rate="1.1">🇺🇸 Dolar amerykański</li>
+<li data-currency="EUR" data-rate="1">🇪🇺 Euro</li>
+</ul>
+</div>
+<div class="cards-container">
+<div class="card" data-desc="Otrzymaj zestaw space /kit space
+Wyłącz prywatne wiadomości /msgtoggle
+Sprawdź swoje współrzędne /getpos">
+<img src="Space.png"/>
+<h3>Space</h3>
+<p class="price" data-eur="0.32">0.32 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Możesz wziąć zestaw GID /kit gid
+Zgiń /suicide
+Załóż przedmiot na głowę /hat">
+<img src="Gid.webp"/>
+<h3>Gid</h3>
+<p class="price" data-eur="0.54">0.54 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw /kit ghost
+Otwórz skrzynię ender /enderchest
+Ugaś ogień /ext
+Teleportuj się na szczyt /top">
+<img src="Ghost.webp"/>
+<h3>Ghost</h3>
+<p class="price" data-eur="1.53">1.53 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw /kit phantom
+Przyzwij błyskawicę /lightning
+Napraw przedmiot w ręce /repair
+Zmień prędkość fajerwerka w ręce /firework
+Pisz różnymi kolorami na czacie">
+<img src="Phantom.webp"/>
+<h3>Phantom</h3>
+<p class="price" data-eur="2.73">2.73 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw /kit warlock
+Teleportuj się na miejsce spojrzenia /jump
+Zmień nazwę przedmiotu w ręce /itemname
+Usuń głód /feed
+Przywróć zdrowie /heal">
+<img src="Warlock.webp"/>
+<h3>Warlock</h3>
+<p class="price" data-eur="5.37">5.37 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw /kit lord
+Teleportuj się na miejsce spojrzenia /jump
+Zmień nazwę przedmiotu w ręce /iname">
+<img src="Lord.webp"/>
+<h3>Lord</h3>
+<p class="price" data-eur="6.03">6.03 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw /kit king
+Zmień porę dnia /time set
+Zmień pogodę /weather
+Możliwość latania /fly">
+<img src="King.webp"/>
+<h3>King</h3>
+<p class="price" data-eur="8.66">8.66 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Otrzymaj zestaw fhysik /kit fhysik
+Dodatkowy zestaw z eliksirami /kit buff
+Zmień prędkość lotu /flyspeed">
+<img src="Fhysik.webp"/>
+<h3>Anarchist</h3>
+<p class="price" data-eur="14.26">14.26 €</p>
+<button>Kup</button>
+</div>
+<div class="cards-container">
+<div class="other-section">
+<h1>Inne</h1>
+<div class="card" data-desc="Z skrzynki z donacjami mogą wypaść przywileje od Space do King">
+<img src="donat.png"/>
+<h3>Skrzynka z przywilej</h3>
+<p class="price" data-eur="0.54">0.54 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Ze skrzynki z monetami może wypaść od 1 000 do 1 000 000 Monet">
+<img src="kejs.jpg"/>
+<h3>Skrzynka z monetami</h3>
+<p class="price" data-eur="0.10">0.10 €</p>
+<button>Kup</button>
+</div>
+<div class="card" data-desc="Zdejmij blokadę czatu i znowu rozmawiaj ze znajomymi">
+<img src="razmut.jpeg"/>
+<h3>Odblokowanie czatu</h3>
+<p class="price" data-eur="0.54">0.54 €</p>
+<button>Kup</button>
+</div>
+</div><div class="card">
+<img src="almaz.webp"/>
+<h3>Szafiry</h3>
+<p class="price" data-eur="0.01">0.01 € za 100 szt.</p>
+<button>Kup</button>
+</div></div></div></div></header>
+<!-- Okno modalne przedmiotu -->
+<div class="modal" id="modal">
+<div class="modal-content">
+<span class="close-btn">×</span>
+<div class="modal-left">
+<h2 id="modal-title">Nazwa</h2>
+<p id="modal-price">Cena</p>
+<p id="modal-desc">Opis przedmiotu...</p>
+<button class="add-to-cart">Dodaj do koszyka</button>
+</div>
+<div class="modal-right">
+<img alt="Obraz" id="modal-img" src="korzina.jpg"/>
+</div>
+</div>
+</div>
+<!-- Koszyk -->
+<div class="cart">
+<img alt="Koszyk" src="korzina.webp"/>
+<div class="cart-count-badge" id="cart-count">0</div>
+</div>
+<div class="cart-modal" id="cart-modal"></div>
+<div style="max-width: 800px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+<h2>Instrukcja zakupu</h2>
+<p><strong>1. Wybór przedmiotu</strong><br/>Dodaj niezbędne przedmioty do koszyka i wypełnij proponowany formularz.</p>
+<p><strong>2. Metoda płatności</strong><br/>Wybierz preferowaną metodę płatności i postępuj zgodnie z dalszymi instrukcjami.</p>
+<p><strong>3. Aktywacja przywileju</strong><br/>Przedmiot jest wydawany automatycznie i natychmiastowo po dokonaniu płatności.</p>
+</div>
+
+<br>
+
+<section class="kraft" id="kraft" style="padding: 50px 20px; background: #f9f9f9;">
+  <h2 style="text-align: center; font-size: 36px; margin-bottom: 40px; position: relative; display: inline-block; left: 50%; transform: translateX(-50%); border-bottom: 3px solid royalblue; padding-bottom: 10px;">
+    🔧 Wytwarzanie
+  </h2>
+
+  <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-bottom: 40px;">
+    <div style="text-align: center;">
+      <img src="C4.png" width="220" style="border: 2px solid gray; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+      <p style="margin-top: 10px; color: #555;">Wytwarzanie dynamitu C4</p>
+    </div>
+    <div style="text-align: center;">
+      <img src="trotil.png" width="220" style="border: 2px solid gray; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+      <p style="margin-top: 10px; color: #555;">Wytwarzanie dynamitu TNT</p>
+    </div>
+  </div>
+
+  <h3 style="text-align: center; margin-bottom: 20px; color: #333;">Wyjaśnienie</h3>
+
+  <table style="margin: 0 auto; border-collapse: collapse; width: 90%; max-width: 700px; background: white; border: 1px solid #ccc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+    <thead style="background: royalblue; color: white;">
+      <tr>
+        <th style="padding: 12px;">Materiał wybuchowy</th>
+        <th style="padding: 12px;">Działanie</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 12px; text-align: center;">C4</td>
+        <td style="padding: 12px;">Wysadza obsydian</td>
+      </tr>
+      <tr style="background-color: #f2f2f2;">
+        <td style="padding: 12px; text-align: center;">TNT</td>
+        <td style="padding: 12px;">Wysadza spawner mobów <br>wraz z przywołaniem moba</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="contacts" style="background: #f5f5f5; padding: 50px 20px;">
+  <h1 style="text-align: center;">Kontakt</h1>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; max-width: 1000px; margin: 0 auto;">
+
+    <!-- Soc.sieci -->
+    <div style="flex: 1; min-width: 250px; padding: 30px;">
+      <h2>Jesteśmy w mediach społecznościowych</h2>
+      <ul style="list-style: none; padding: 0; line-height: 2; font-size: 16px;">
+        <li>📧 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">VK: </a></li>
+        <li>📷 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">Kanał Telegram: </a></li>
+        <li>💬 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">Czat Telegram: </a></li>
+        <li>🎮 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">Discord: </a></li>
+      </ul>
+    </div>
+
+    <!-- Formularz -->
+    <div style="flex: 1; min-width: 250px;">
+      <h2>Skontaktuj się z nami</h2>
+      <form>
+        <label>Imię:</label><br>
+        <input type="text" name="name" style="width: 100%; padding: 8px;"><br><br>
+
+        <label>Adres e-mail:</label><br>
+        <input type="email" name="email" style="width: 100%; padding: 8px;"><br><br>
+
+        <label>Wiadomość:</label><br>
+        <textarea rows="5" name="message" style="width: 100%; padding: 8px;"></textarea><br><br>
+
+        <button type="submit" style="padding: 10px 20px; background: royalblue; color: white; border: none; border-radius: 6px; cursor: pointer;">
+          Wyślij
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+
+<script>
+  // Функция для показа сообщения "Wkrótce"
+  function showSoon() {
+      const el = document.getElementById("soon-msg");
+      el.style.display = "block";
+      setTimeout(() => {
+        el.style.display = "none";
+      }, 2000);
+    }
+
+  // Функция goToLight() не используется в текущем коде
+  function goToLight() {
+    // если это текущая страница — можно просто перезагрузить
+    location.reload();
+    // или location.href = '/light.html' если у тебя есть отдельная страница
+  }
+
+const cart = []; // Массив для хранения элементов корзины
+
+// Получение элементов корзины
+const cartBtn = document.querySelector('.cart');
+const cartModal = document.getElementById('cart-modal');
+const cartCounter = document.getElementById('cart-count');
+
+// Получение элементов модального окна товара
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalPrice = document.getElementById('modal-price');
+const modalDesc = document.getElementById('modal-desc');
+const modalImg = document.getElementById('modal-img');
+
+let currentItem = {}; // Объект для хранения данных текущего выбранного элемента
+
+// Получение кнопки "Добавить в корзину" из модального окна
+const addToCartBtn = document.querySelector('.add-to-cart');
+
+// Открытие модального окна при нажатии на кнопку "Купить" в карточке
+document.querySelectorAll('.card button').forEach(button => { // Изменено с '.card' на '.card button'
+  button.addEventListener('click', (event) => { // Добавлен event
+    const card = event.target.closest('.card'); // Находим ближайшую карточку
+    const title = card.querySelector('h3').textContent;
+    const price = card.querySelector('.price').textContent;
+    const img = card.querySelector('img').getAttribute('src');
+    const desc = card.getAttribute('data-desc') || '';
+
+    currentItem = { title, price, img };
+    modalTitle.textContent = title;
+    modalPrice.textContent = price;
+    modalDesc.innerHTML = desc.replace(/\n/g, '<br>');
+    modalImg.setAttribute('src', img);
+
+    modal.style.display = 'block';
+  });
+});
+
+// Закрытие модального окна по кнопке "x"
+if (document.querySelector('.close-btn')) {
+  document.querySelector('.close-btn').addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+}
+
+// Добавление в корзину
+addToCartBtn.addEventListener('click', () => {
+  cart.push(currentItem);
+  modal.style.display = 'none';
+  flyToCart(modalImg);
+  cartCounter.textContent = cart.length;
+  updateCartModal();
+});
+
+// Открытие корзины
+cartBtn.addEventListener('click', () => {
+  if (cart.length === 0) {
+    cartBtn.classList.add('shake');
+    setTimeout(() => cartBtn.classList.remove('shake'), 500);
+    return;
+  }
+
+  cartModal.style.display = cartModal.style.display === 'block' ? 'none' : 'block';
+  updateCartModal();
+});
+
+function updateCartModal() {
+  let total = 0;
+  let itemsHTML = '';
+
+  cart.forEach((item, index) => {
+    const priceValue = parseFloat(item.price.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0;
+    total += priceValue;
+    itemsHTML += `
+      <div class="cart-item">
+        <img src="${item.img}" alt="">
+        <div style="flex:1;">
+          <strong>${item.title}</strong><br>${item.price}
+        </div>
+        <button onclick="removeItem(${index})">×</button>
+      </div>`;
+  });
+
+  cartModal.innerHTML = `
+    <span onclick="closeCart()" style="position:absolute; top:10px; right:20px; font-size:24px; cursor:pointer; color:#888;">×</span>
+    <h3 style="margin-bottom: 20px;">Koszyk</h3>
+    <div class="cart-modal-grid">
+      <div class="cart-left">${itemsHTML}
+        <hr>
+        <p style="text-align:right; font-size: 18px;"><strong>Razem:</strong> ${total.toFixed(2)} €</p>
+      </div>
+      <div class="cart-right">
+        <label><strong>Nick w grze</strong></label>
+        <input type="text" id="nickname" placeholder="Np.: SteveCraft">
+        <label><strong>Kupon rabatowy</strong></label>
+        <input type="text" id="coupon" placeholder="Wprowadź kupon (jeśli masz)">
+        <button class="checkout-btn" onclick="checkout()">KONTYNUUJ</button>
+      </div>
+    </div>`;
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  cartCounter.textContent = cart.length;
+  updateCartModal();
+}
+
+function checkout() {
+  const nicknameInput = document.getElementById('nickname');
+  const nickname = nicknameInput ? nicknameInput.value.trim() : '';
+
+  if (!nickname) {
+    alert('⚠️ Proszę, wprowadź swój nick przed zakupem!');
+    if (nicknameInput) nicknameInput.focus();
+    return;
+  }
+
+  alert('✅ Zakup sfinalizowany!');
+  cart.length = 0;
+  document.getElementById('cart-count').textContent = 0;
+  updateCartModal();
+  closeCart();
+}
+
+function closeCart() {
+  cartModal.style.display = 'none';
+}
+
+// waluta
+const currencyRates = {
+  EUR: 1,
+  PLN: 4.5, // Polski Złoty
+  BYN: 3.5,
+  USD: 1.1
+};
+
+const currencySymbols = {
+  EUR: '€',
+  PLN: 'zł', // Polski Złoty symbol
+  BYN: 'Br',
+  USD: '$'
+};
+
+document.querySelectorAll('.currency-dropdown li').forEach(item => {
+  item.addEventListener('click', () => {
+    const selected = item.getAttribute('data-currency');
+    const rate = parseFloat(item.getAttribute('data-rate'));
+    document.getElementById('selected-currency').textContent = item.textContent;
+
+    document.querySelectorAll('.price').forEach(priceEl => {
+      const eur = parseFloat(priceEl.dataset.eur);
+      if (!isNaN(eur)) {
+        const converted = (eur * rate).toFixed(2);
+        priceEl.textContent = `${converted} ${currencySymbols[selected]}`;
+      }
+    });
+  });
+});
+
+function flyToCart(imageElement) {
+  const cartIcon = document.querySelector('.cart img');
+  const imgClone = imageElement.cloneNode(true);
+  const imgRect = imageElement.getBoundingClientRect();
+  const cartRect = cartIcon.getBoundingClientRect();
+
+  imgClone.style.position = 'fixed';
+  imgClone.style.zIndex = '3000';
+  imgClone.style.top = `${imgRect.top}px`;
+  imgClone.style.left = `${imgRect.left}px`;
+  imgClone.style.width = `${imgRect.width}px`;
+  imgClone.style.transition = 'all 0.8s ease-in-out';
+  imgClone.style.borderRadius = '10px';
+  document.body.appendChild(imgClone);
+
+  requestAnimationFrame(() => {
+    imgClone.style.top = `${cartRect.top + 5}px`;
+    imgClone.style.left = `${cartRect.left + 5}px`;
+    imgClone.style.width = '0px';
+    imgClone.style.opacity = '0';
+  });
+
+  imgClone.addEventListener('transitionend', () => {
+    imgClone.remove();
+  });
+}
+
+// Слайдер недавних покупок (автоматическая прокрутка)
+const purchaseSlider = document.querySelector('.purchase-slider'); // Используем querySelector для класса
+if (purchaseSlider) { // Проверяем, существует ли элемент
+  let scrollAmount = 0;
+  const scrollStep = 1; // prędkość przewijania
+  const delay = 20;     // interwał między przewijaniem
+
+  function autoScrollSlider() {
+    scrollAmount += scrollStep;
+    if (scrollAmount >= purchaseSlider.scrollWidth - purchaseSlider.clientWidth) {
+      scrollAmount = 0;
+    }
+    purchaseSlider.scrollTo({ left: scrollAmount, behavior: 'smooth' });
+  }
+  setInterval(autoScrollSlider, delay);
+}
+
+
+// Слайдер изображений (смена активного изображения)
+const sliderImages = document.querySelectorAll('.slider-image');
+let currentSlide = 0;
+
+function showSlide(index) {
+  sliderImages.forEach((img, i) => {
+    img.classList.toggle('active', i === index);
+  });
+}
+
+setInterval(() => {
+  currentSlide = (currentSlide + 1) % sliderImages.length;
+  showSlide(currentSlide);
+}, 30000); // 30000 ms = 30 sekund
+
+</script>
+</body>
+</html>
