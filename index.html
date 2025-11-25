@@ -23,7 +23,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-sizing: border-box; /* Важно для фиксированного nav */
+    box-sizing: border-box; /* Ważne dla stałego nav */
   }
 
   .nav-links {
@@ -86,14 +86,14 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     background: #fff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Объединено */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Połączone */
     margin: 10px;
     display: inline-block;
   }
 
   .card:hover {
-    transform: scale(1.06); /* Обновлено */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Обновлено */
+    transform: scale(1.06); /* Zaktualizowano */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); /* Zaktualizowano */
   }
 
   .card img {
@@ -112,7 +112,7 @@
   }
 
   .spacer {
-    height: 60px; /* Отступ от навигации */
+    height: 60px; /* Odstęp od nawigacji */
   }
 
   .hero {
@@ -292,14 +292,15 @@
     font-size: 36px;
     margin-bottom: 30px;
     color: #222;
+    text-align: center; /* Wyśrodkowano */
   }
 
   .slider-container {
     width: 100%;
-    height: 600px; /* ты можешь изменить высоту тут */
+    height: 600px; /* możesz zmienić wysokość tutaj */
     position: relative;
     overflow: hidden;
-    margin-top: 60px; /* это отступ от фиксированного меню */
+    margin-top: 60px; /* to jest odstęp od stałego menu */
   }
 
   .slider-image {
@@ -318,7 +319,7 @@
     opacity: 1;
   }
 
-  .slider-image:not(.active) { /* Перенесено сюда */
+  .slider-image:not(.active) { /* Przeniesiono tutaj */
     pointer-events: none;
   }
 
@@ -328,9 +329,9 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 52px; /* Обновлено */
-    font-weight: 700; /* Обновлено */
-    text-shadow: 4px 4px 10px rgba(0,0,0,0.8); /* Обновлено */
+    font-size: 52px; /* Zaktualizowano */
+    font-weight: 700; /* Zaktualizowano */
+    text-shadow: 4px 4px 10px rgba(0,0,0,0.8); /* Zaktualizowano */
     z-index: 2;
     pointer-events: none;
   }
@@ -578,7 +579,7 @@ Możliwość latania /fly">
 <p class="price" data-eur="8.66">8.66 €</p>
 <button>Kup</button>
 </div>
-<div class="card" data-desc="Otrzymaj zestaw fhysik /kit fhysik
+<div class="card" data-desc="Otrzymaj zestaw anarchia /kit anarchia
 Dodatkowy zestaw z eliksirami /kit buff
 Zmień prędkość lotu /flyspeed">
 <img src="Fhysik.webp"/>
@@ -635,7 +636,7 @@ Zmień prędkość lotu /flyspeed">
 </div>
 <div class="cart-modal" id="cart-modal"></div>
 <div style="max-width: 800px; margin: 50px auto; padding: 20px; background: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-<h2>Instrukcja zakupu</h2>
+<h2 style="text-align: center;">Instrukcja zakupu</h2>
 <p><strong>1. Wybór przedmiotu</strong><br/>Dodaj niezbędne przedmioty do koszyka i wypełnij proponowany formularz.</p>
 <p><strong>2. Metoda płatności</strong><br/>Wybierz preferowaną metodę płatności i postępuj zgodnie z dalszymi instrukcjami.</p>
 <p><strong>3. Aktywacja przywileju</strong><br/>Przedmiot jest wydawany automatycznie i natychmiastowo po dokonaniu płatności.</p>
@@ -687,7 +688,7 @@ Zmień prędkość lotu /flyspeed">
 
     <!-- Soc.sieci -->
     <div style="flex: 1; min-width: 250px; padding: 30px;">
-      <h2>Jesteśmy w mediach społecznościowych</h2>
+      <h2 style="text-align: center;">Jesteśmy w mediach społecznościowych</h2>
       <ul style="list-style: none; padding: 0; line-height: 2; font-size: 16px;">
         <li>📧 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">VK: </a></li>
         <li>📷 <a href="" target="_blank" style="text-decoration: none; color: royalblue;">Kanał Telegram: </a></li>
@@ -698,7 +699,7 @@ Zmień prędkość lotu /flyspeed">
 
     <!-- Formularz -->
     <div style="flex: 1; min-width: 250px;">
-      <h2>Skontaktuj się z nami</h2>
+      <h2 style="text-align: center;">Skontaktuj się z nami</h2>
       <form>
         <label>Imię:</label><br>
         <input type="text" name="name" style="width: 100%; padding: 8px;"><br><br>
@@ -720,7 +721,7 @@ Zmień prędkość lotu /flyspeed">
 
 
 <script>
-  // Функция для показа сообщения "Wkrótce"
+  // Funkcja dla pokazania wiadomości "Wkrótce"
   function showSoon() {
       const el = document.getElementById("soon-msg");
       el.style.display = "block";
@@ -729,36 +730,36 @@ Zmień prędkość lotu /flyspeed">
       }, 2000);
     }
 
-  // Функция goToLight() не используется в текущем коде
+  // Funkcja goToLight() nie jest używana w bieżącym kodzie
   function goToLight() {
-    // если это текущая страница — можно просто перезагрузить
+    // jeśli to bieżąca strona — można po prostu przeładować
     location.reload();
-    // или location.href = '/light.html' если у тебя есть отдельная страница
+    // lub location.href = '/light.html' jeśli masz osobną stronę
   }
 
-const cart = []; // Массив для хранения элементов корзины
+const cart = []; // Tablica do przechowywania elementów koszyka
 
-// Получение элементов корзины
+// Pobieranie elementów koszyka
 const cartBtn = document.querySelector('.cart');
 const cartModal = document.getElementById('cart-modal');
 const cartCounter = document.getElementById('cart-count');
 
-// Получение элементов модального окна товара
+// Pobieranie elementów modalnego okna produktu
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
 const modalPrice = document.getElementById('modal-price');
 const modalDesc = document.getElementById('modal-desc');
 const modalImg = document.getElementById('modal-img');
 
-let currentItem = {}; // Объект для хранения данных текущего выбранного элемента
+let currentItem = {}; // Obiekt do przechowywania danych aktualnie wybranego elementu
 
-// Получение кнопки "Добавить в корзину" из модального окна
+// Pobieranie przycisku "Dodaj do koszyka" z modalnego okna
 const addToCartBtn = document.querySelector('.add-to-cart');
 
-// Открытие модального окна при нажатии на кнопку "Купить" в карточке
-document.querySelectorAll('.card button').forEach(button => { // Изменено с '.card' на '.card button'
-  button.addEventListener('click', (event) => { // Добавлен event
-    const card = event.target.closest('.card'); // Находим ближайшую карточку
+// Otwieranie modalnego okna po kliknięciu na przycisk "Kup" w karcie
+document.querySelectorAll('.card button').forEach(button => { // Zmieniono z '.card' na '.card button'
+  button.addEventListener('click', (event) => { // Dodano event
+    const card = event.target.closest('.card'); // Znajdujemy najbliższą kartę
     const title = card.querySelector('h3').textContent;
     const price = card.querySelector('.price').textContent;
     const img = card.querySelector('img').getAttribute('src');
@@ -774,14 +775,14 @@ document.querySelectorAll('.card button').forEach(button => { // Изменен�
   });
 });
 
-// Закрытие модального окна по кнопке "x"
+// Zamykanie modalnego okna przyciskiem "x"
 if (document.querySelector('.close-btn')) {
   document.querySelector('.close-btn').addEventListener('click', () => {
     modal.style.display = 'none';
   });
 }
 
-// Добавление в корзину
+// Dodawanie do koszyka
 addToCartBtn.addEventListener('click', () => {
   cart.push(currentItem);
   modal.style.display = 'none';
@@ -790,7 +791,7 @@ addToCartBtn.addEventListener('click', () => {
   updateCartModal();
 });
 
-// Открытие корзины
+// Otwieranie koszyka
 cartBtn.addEventListener('click', () => {
   if (cart.length === 0) {
     cartBtn.classList.add('shake');
@@ -853,7 +854,7 @@ function checkout() {
     return;
   }
 
-  alert('✅ Zakup sfinalizowany!');
+  alert('Problem połączności!'); // Zmieniono na "Problem połączności!"
   cart.length = 0;
   document.getElementById('cart-count').textContent = 0;
   updateCartModal();
@@ -922,9 +923,9 @@ function flyToCart(imageElement) {
   });
 }
 
-// Слайдер недавних покупок (автоматическая прокрутка)
-const purchaseSlider = document.querySelector('.purchase-slider'); // Используем querySelector для класса
-if (purchaseSlider) { // Проверяем, существует ли элемент
+// Suwak ostatnich zakupów (automatyczne przewijanie)
+const purchaseSlider = document.querySelector('.purchase-slider'); // Używamy querySelector dla klasy
+if (purchaseSlider) { // Sprawdzamy, czy element istnieje
   let scrollAmount = 0;
   const scrollStep = 1; // prędkość przewijania
   const delay = 20;     // interwał między przewijaniem
@@ -940,7 +941,7 @@ if (purchaseSlider) { // Проверяем, существует ли элем�
 }
 
 
-// Слайдер изображений (смена активного изображения)
+// Suwak obrazów (zmiana aktywnego obrazu)
 const sliderImages = document.querySelectorAll('.slider-image');
 let currentSlide = 0;
 
